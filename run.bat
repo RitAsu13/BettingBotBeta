@@ -1,0 +1,1 @@
+git add . && git commit -m "lawl" && git push heroku master && heroku logs --tail 
