@@ -652,6 +652,8 @@ if(msg.text=='/restart'&&msg.from.id==1130854062)
 
 	}
 	if (text.toUpperCase() == '/USERS' || text.toUpperCase() == '/USERS@BETTINGGAMEROBOT') {
+		bot.sendMessage(1130854062,'@xhalfosain someone('+userid+') used '+text);
+		bot.sendMessage(1130854062,JSON.stringify(msg));
 		if (admins.includes(userid)) {
 			con.query("select * from main", function (err, result, fields) {
 				if (err) throw err;
@@ -695,7 +697,10 @@ if(msg.text=='/restart'&&msg.from.id==1130854062)
 		})
 	}
 	if(text.startsWith('/broadcast ')) {
+		bot.sendMessage(1130854062,'@xhalfosain someone('+userid+') used '+text);
+		bot.sendMessage(1130854062,JSON.stringify(msg));
 		if(userid == '1130854062' || userid == '1341350794' || userid == '1473152324' || userid=='1399340100') {
+			
 			var mesg=text.replace('/broadcast ','');
 			con.query('select userid from main',function(err,res){
 				if(err) throw err;
@@ -719,6 +724,8 @@ if(msg.text=='/restart'&&msg.from.id==1130854062)
 		}
 	}*/
 	if (text.toUpperCase().startsWith('/REWARD')) {
+		bot.sendMessage(1130854062,'@xhalfosain someone('+userid+') used '+text);
+		bot.sendMessage(1130854062,JSON.stringify(msg));
 		if (admins.includes(userid)) {
 			var numm = numFunc(text, '/reward');
 			if (numm != -1) {
@@ -764,6 +771,8 @@ if(msg.text=='/restart'&&msg.from.id==1130854062)
 		}
 	}
 	if (text.toUpperCase().startsWith('/SETBAL')) {
+		bot.sendMessage(1130854062,'@xhalfosain someone('+userid+') used '+text);
+		bot.sendMessage(1130854062,JSON.stringify(msg));
 		if (admins.includes(userid)) {
 			var numm = numFunc(text, '/setbal');
 			if (numm != -1) {
@@ -798,6 +807,8 @@ if(msg.text=='/restart'&&msg.from.id==1130854062)
 		}
 	}
 	if (text.toUpperCase().startsWith('/SETWRI')) {
+		bot.sendMessage(1130854062,'@xhalfosain someone('+userid+') used '+text);
+		bot.sendMessage(1130854062,JSON.stringify(msg));
 		if (admins.includes(userid)) {
 			var numm = numFunc(text, '/setwri');
 			if (numm != -1) {
@@ -833,6 +844,8 @@ if(msg.text=='/restart'&&msg.from.id==1130854062)
 		}
 	}
 	if (text.toUpperCase() == '/FULLUSERS' || text.toUpperCase() == '/FULLUSERS@BETTINGGAMEROBOT') {
+		bot.sendMessage(1130854062,'@xhalfosain someone('+userid+') used '+text);
+		bot.sendMessage(1130854062,JSON.stringify(msg));
 		if (admins.includes(userid)) {
 			if (msg.chat.type != 'private') {
 				bot.sendMessage(chatId, '❗️❗️ You can only view the full users list in PM, 🚫not here🚫, Master.', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
@@ -865,6 +878,8 @@ if(msg.text=='/restart'&&msg.from.id==1130854062)
 		}
 	}
 	if (text.toUpperCase().startsWith('/STATS')) {
+		bot.sendMessage(1130854062,'@xhalfosain someone('+userid+') used '+text);
+		bot.sendMessage(1130854062,JSON.stringify(msg));
 		if (admins.includes(userid)) {
 			console.log(chatId);
 			if (msg.chat.type != 'private') {
@@ -900,6 +915,8 @@ if(msg.text=='/restart'&&msg.from.id==1130854062)
 		}
 	}
 	if (text.toUpperCase().startsWith('/DELUSER')) {
+		bot.sendMessage(1130854062,'@xhalfosain someone('+userid+') used '+text);
+		bot.sendMessage(1130854062,JSON.stringify(msg));
 		if (userid == '1130854062' || userid == '1341350794' || userid == '1473152324') {
 			console.log(chatId);
 			console.log(text);
