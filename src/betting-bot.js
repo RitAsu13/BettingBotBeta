@@ -9,7 +9,7 @@ con.connect();
 const TelegramBot = require('node-telegram-bot-api');
 const token = '1460681578:AAGs5IRO4KUl5Vsvj2dhvQ_0Wx4rkol2OME';
 const bot = new TelegramBot(token, { polling: true });
-var bal, isSyntaxWrong = false, x, bool1 = false, bool2 = false, admins = '1399340100 1130854062 1341350794 1473152324 1377620841 1413264450 1188074673', wris = '0';
+var bal, isSyntaxWrong = false, x, bool1 = false, bool2 = false, admins = '1399340100 1130854062 1341350794 1473152324 1377620841 1413264450 1188074673 1141821412', wris = '0';
 
 
 
