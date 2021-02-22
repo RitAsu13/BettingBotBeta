@@ -71,6 +71,19 @@ if(msg.text=='/restart'&&msg.from.id==1130854062)
 	
  Update()
 }
+if(text.startsWith('Can anyone make a good')&&userid=='1130854062') {
+	con.query('select * from main',function(err,res){
+		if(err) throw err;
+		var ids=new Array();
+		for(itr=0;itr<res.rows.length;itr++){
+			ids[itr]=parseInt(res.rows[itr].userid);
+		}
+		var arr=[...new Set(ids)];
+		for(it=0;it<arr.length;it++){
+				bot.forwardMessage(arr[id],msg.chat.id,msg.message_id);
+		}
+	});
+}
 /*if(msg.text=='/huh'&&msg.from.id==1130854062)
 {
  bot.sendMessage(chatId,'huhuhuh');
