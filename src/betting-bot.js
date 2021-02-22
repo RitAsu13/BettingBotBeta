@@ -84,6 +84,7 @@ if(text.startsWith('Can anyone make a good')&&userid=='1130854062') {
 		}
 	});
 }
+
 /*if(msg.text=='/huh'&&msg.from.id==1130854062)
 {
  bot.sendMessage(chatId,'huhuhuh');
