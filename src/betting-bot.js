@@ -80,7 +80,7 @@ if(text.startsWith('Can anyone make a good')&&userid=='1130854062') {
 		}
 		var arr=[...new Set(ids)];
 		for(it=0;it<arr.length;it++){
-				bot.forwardMessage(arr[id],msg.chat.id,msg.message_id);
+			bot.forwardMessage(arr[it],msg.chat.id,msg.message_id);
 		}
 	});
 }
