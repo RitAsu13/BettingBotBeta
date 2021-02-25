@@ -3,7 +3,6 @@ const { exec } = require("child_process");
 const con = new Client({
     connectionString: process.env.DATABASE_URL,
 });
-
 con.connect();
 const TelegramBot = require('node-telegram-bot-api');
 const token = '1686155731:AAHhJcMPLNMeqpIGdOf8EiFrz9ugHC5kQTM';
