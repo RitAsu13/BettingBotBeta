@@ -11,16 +11,10 @@ const bot = new TelegramBot(token, { polling: true });
 var bal, isSyntaxWrong = false, x, bool1 = false, bool2 = false, admins = '1399340100 1130854062 1341350794 1473152324',cmds='/START /HELP /SETTINGS /INFO /CREDITS /BET /SETBETDEF /SBET /BAL /MYSTATS /MINIGAME /MINIGAMEHELP /SETMINIDEF /BUTTONMINIGAME /GIVE /REFERRALS /DAILYREWARD /LEADERBOARD /RLEADERBOARD /USERS /BROADCAST /REWARD /SETBAL /SETWRI /FULLUSERS /STATS /DELUSER';//, rt = false;
 con.query("select * from main", function (err, result) {
     if (err) throw err;
-    //for(x=0 ;x<result.rows.length;x++) {
-    //	console.log(result.rows[x]);
-    //}
+    for(x=0 ;x<5;x++) {
+    	console.log(result.rows[x]);
+    }
     console.log('\n\nNo of users: ' + result.rows.length + '\n\n');
-	for(x=0;x<result.rows.length;x++) {
-		con.query("update main set state='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
-		con.query("update main set deposit='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
-	}
-	    console.log('done');
-
 });
 bot.on('message', async function (msg) {
 	var state='0',wris='0';
