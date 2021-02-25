@@ -20,7 +20,7 @@ con.query("select * from main", function (err, result) {
 bot.on('message', async function (msg) {
 	var state='0',wris='0';
 	var user=await con.query('select * from main where userid=$1',[msg.from.id.toString()]).catch((e)=>{throw e;})
-	state=user[0].state;
+	state=user.rows[0].state;
 	if(state=='0') {
 		rt = false;
 		//isSyntaxWrong=false;
