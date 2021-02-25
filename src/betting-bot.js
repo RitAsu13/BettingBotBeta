@@ -9,7 +9,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const token = '1686155731:AAHhJcMPLNMeqpIGdOf8EiFrz9ugHC5kQTM';
 const bot = new TelegramBot(token, { polling: true });
 var bal, isSyntaxWrong = false, x, bool1 = false, bool2 = false, admins = '1399340100 1130854062 1341350794 1473152324',cmds='/START /HELP /SETTINGS /INFO /CREDITS /BET /SETBETDEF /SBET /BAL /MYSTATS /MINIGAME /MINIGAMEHELP /SETMINIDEF /BUTTONMINIGAME /GIVE /REFERRALS /DAILYREWARD /LEADERBOARD /RLEADERBOARD /USERS /BROADCAST /REWARD /SETBAL /SETWRI /FULLUSERS /STATS /DELUSER';//, rt = false;
-con.query("alter table main add column state varchar(255)", function (err, result) {
+con.query("select * from main", function (err, result) {
     if (err) throw err;
     //for(x=0 ;x<result.rows.length;x++) {
     //	console.log(result.rows[x]);
@@ -930,13 +930,30 @@ bot.on('message', async function (msg) {
 					bot.sendMessage(chatId, 'Invalid amount. Please confirm that your entered amount follows this:-\n\nYou have to use whole numbers only, i.e. the number should not contain any other letter than digits, special character, decimal or \'e\'. And it should also not be negative.', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
 				}
 				else if(i==text.length-1) {
-					
+					con.query("update main set deposit=$1 where userid=$2",[text,userid],(err,res)=> {if(err) throw err;});
+					con.query("update main set state='2' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
+					bot.sendMessage(chatId,'Are you sure? If yes then send "Yes, sure." exactly without the quotes in the very next message. Note that deposited money can only be taken out after a minimum of 3 hours after deposit time and you cannot deposit more coins until you take this amount out.');
 				}				
 			}
 		}
 	}
 	else if(state=='2') {
-		
+		if(text=='Yes, sure.'&&msg.chat.type=='private') {
+			bot.sendMessage(chatId,'coins successfully deposited');
+			con.query('select * from main where userid=$1',[userid],(err,res)=>{
+				if(err) throw err;
+				add(0-parseInt(res.rows[0].deposit),parseInt(res.rows[0].balance),userid);
+			});
+			con.query("update main set state='3' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
+		}
+		else if(msg.chat.type=='private') {
+			bot.sendMessage(chatId,'deposit cancelled');
+			con.query("update main set state='0' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
+			con.query("update main set deposit='0' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
+		}
+		else if(cmds.includes(text.toUpperCase())||text.toUpperCase().startsWith('/START')||text.toUpperCase().startsWith('/BET')||text.toUpperCase().startsWith('/SETBETDEF')||text.toUpperCase().startsWith('/SBET')||text.toUpperCase().startsWith('/MINIGAME')||text.toUpperCase().startsWith('/SETMINIDEF')||text.toUpperCase().startsWith('/GIVE')||text.toUpperCase().startsWith('/BROADCAST')||text.toUpperCase().startsWith('/REWARD')||text.toUpperCase().startsWith('/SETBAL')||text.toUpperCase().startsWith('/SETWRI')||text.toUpperCase().startsWith('/STATS')||text.toUpperCase().startsWith('/DELUSER')) {
+			bot.sendMessage(chatId,'Please continue the ongoing bank deposit process first :)');			
+		}
 	}
     function bet(bal, numm, x) {
         con.query('select * from main where userid=$1', [userid], function (err, result, fields) {
