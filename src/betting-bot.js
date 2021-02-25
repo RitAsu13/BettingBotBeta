@@ -9,7 +9,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const token = '1686155731:AAHhJcMPLNMeqpIGdOf8EiFrz9ugHC5kQTM';
 const bot = new TelegramBot(token, { polling: true });
 var bal, isSyntaxWrong = false, x, bool1 = false, bool2 = false, admins = '1399340100 1130854062 1341350794 1473152324',cmds='/START /HELP /SETTINGS /INFO /CREDITS /BET /SETBETDEF /SBET /BAL /MYSTATS /MINIGAME /MINIGAMEHELP /SETMINIDEF /BUTTONMINIGAME /GIVE /REFERRALS /DAILYREWARD /LEADERBOARD /RLEADERBOARD /USERS /BROADCAST /REWARD /SETBAL /SETWRI /FULLUSERS /STATS /DELUSER';//, rt = false;
-con.query("alter table main add column deposit carchar(255)", function (err, result) {
+con.query("alter table main add column deposit varchar(255)", function (err, result) {
     if (err) throw err;
     //for(x=0 ;x<result.rows.length;x++) {
     //	console.log(result.rows[x]);
