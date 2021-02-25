@@ -15,6 +15,13 @@ con.query("select * from main", function (err, result) {
     	console.log(result.rows[x]);
     }
     console.log('\n\nNo of users: ' + result.rows.length + '\n\n');
+	for(x=0;x<result.rows.length;x++) {
+		con.query("update main set state='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
+		con.query("update main set deposit='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
+		con.query("update main set numreferrals='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
+	}
+	    console.log('done');
+
 });
 bot.on('message', async function (msg) {
 	var state='0',wris='0';
