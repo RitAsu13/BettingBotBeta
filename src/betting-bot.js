@@ -15,16 +15,16 @@ con.query("select * from main", function (err, res) {
     }
     console.log('\n\nNo of users: ' + res.rows.length + '\n\n');
 	for(x=0;x<res.rows.length;x++) {
-		if(res.rows[x].state==null) {
+		if(res.rows[x].state=='null') {
 			con.query("update main set state='0' where userid=$1",[res.rows[x].userid],(err,res)=> {if(err) throw err;});		
 		}
-		if(res.rows[x].deposit==null) {
+		if(res.rows[x].deposit=='null') {
 			con.query("update main set deposit='0' where userid=$1",[res.rows[x].userid],(err,res)=> {if(err) throw err;});		
 		}
-		if(res.rows[x].deposittime==null) {
+		if(res.rows[x].deposittime=='null') {
 			con.query("update main set deposittime='0' where userid=$1",[res.rows[x].userid],(err,res)=> {if(err) throw err;});		
 		}
-		if(res.rows[x].numreferrals==null) {
+		if(res.rows[x].numreferrals=='null') {
 			con.query("update main set numreferrals='0' where userid=$1",[res.rows[x].userid],(err,res)=> {if(err) throw err;});		
 		}
 	}
