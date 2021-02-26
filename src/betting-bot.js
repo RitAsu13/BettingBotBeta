@@ -33,7 +33,9 @@ con.query("select * from main", function (err, res) {
 bot.on('message', async function (msg) {
 	var state='0',wris='0',chatId=msg.chat.id,text=msg.text,userid=msg.from.id.toString(),id=msg.from.id;
 	var user=await con.query('select * from main where userid=$1',[msg.from.id.toString()]).catch((e)=>{throw e;})
-	state=user.rows[0].state;
+	if(user.rows[0]!=undefined) { 
+		state=user.rows[0].state;
+	}
 	if(state=='0'||user.rows[0]==undefined) {
 		rt = false;
 		//isSyntaxWrong=false;
@@ -166,7 +168,7 @@ bot.on('message', async function (msg) {
 			}
 		}
 		if (text.toUpperCase() == '/HELP' || text.toUpperCase() == '/HELP@BETTINGGAMEROBOT') {
-			bot.sendMessage(chatId, 'Here is the help👇👇\n\n➡️Use /bet<number> to bet coins.\n➡️Use /help to see the help message\n➡️Use /bal to see how many coins you have\n➡️Use /give<number> to donate coins to your friends.\n➡️Use /minigame<number> to play minigame with the number(or use just /minigame to choose your number by buttons).\n➡️Use /minigamehelp to know more about minigame.\n➡️Use /referrals to know your number of referrals and referral link.\n➡️Use /sbet<x> <n> to bet n coins with x number of win rate increasers(it means your winning chances would become (50+x)% instead of 50%).\n➡️Use /dailyreward to claim your daily reward.\nUse /leaderboard to see leaderboard of people having highest balances.\n\nFor more information see /info ℹ️ℹ️', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
+			bot.sendMessage(chatId, 'Here is the help👇👇\n\n➡️Use /bet<number> to bet coins.\n➡️Use /help to see the help message\n➡️Use /bal to see how many coins you have\n➡️Use /give<number> to donate coins to your friends.\n➡️Use /minigame<number> to play minigame with the number(or use just /minigame to choose your number by buttons).\n➡️Use /minigamehelp to know more about minigame.\n➡️Use /referrals to know your number of referrals and referral link.\n➡️Use /sbet<x> <n> to bet n coins with x number of win rate increasers(it means your winning chances would become (50+x)% instead of 50%).\n➡️Use /dailyreward to claim your daily reward.\n➡️Use /leaderboard to see leaderboard of people having highest balances.\nUse /bank for bank\n\nFor more information see /info ℹ️ℹ️', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
 		}
 		if (text.toUpperCase() == '/SETTINGS' || text.toUpperCase() == '/SETTINGS@BETTINGGAMEROBOT') {
 			bot.sendMessage(chatId, 'Here are the settings:-\n\nUse /setbetdef<x> to set default betting amount to x, so after setting this, whenever you just type /bet or /bet@bettinggamerobot, bot will automatically bet x coins.\nUse /setminidef<x> to set default minigame number to x, so after setting this, whenever you just type /minigame or /minigame@bettinggamerobot, bot will automatically play minigame with the number as x.\n\nNote: Use /setbetdef0 or /setminidef0 to disable this feature so if you type just /bet or /minigame or /bet@bettinggamerobot or /minigame@bettinggamerobot after disabling it would neither bet anything nor play minigame.\n\nNote: All these things are changable.', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
@@ -682,7 +684,7 @@ bot.on('message', async function (msg) {
 			if(res.rows[0]==undefined) {
 				await con.query('insert into main (userid,balance,wri,state,deposit) values ($1,$2,$3,$4,$5)', [userid, '3000', '0','0','0']).catch((e)=>{throw err;})
 				if(msg.chat.type=='private') {
-						bot.sendMessage(chatId,'Welcome to bank. Rate of simple interest is 5% per hour. You need to wait minimum 0 hours to withdraw after depositing. Enter the amount you want to deposit in the very next message. Amount should be less than or equal to 10 million coins.\nDo /cancel to cancel',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
+						bot.sendMessage(chatId,'Welcome to bank. Rate of simple interest is 5% per hour. Do /withdraw to withdraw your coins from the bank. You need to wait minimum 1 hour to withdraw after depositing. Enter the amount you want to deposit in the very next message. Amount should be less than or equal to 10 million coins.\nDo /cancel to cancel',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
 						con.query("update main set state='1' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
 				}
 				else {
@@ -692,7 +694,7 @@ bot.on('message', async function (msg) {
 			else {
 				if(msg.chat.type=='private') {
 					if(res.rows[0].deposit=='0') {
-						bot.sendMessage(chatId,'Welcome to bank. Rate of simple interest is 5% per hour. You need to wait minimum 0 hours to withdraw after depositing. Enter the amount you want to deposit in the very next message. Amount should be less than or equal to 10 million coins.\nDo /cancel to cancel',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
+						bot.sendMessage(chatId,'Welcome to bank. Rate of simple interest is 5% per hour. Do /withdraw to withdraw your coins from the bank. You need to wait minimum 0 hours to withdraw after depositing. Enter the amount you want to deposit in the very next message. Amount should be less than or equal to 10 million coins.\nDo /cancel to cancel',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
 						con.query("update main set state='1' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
 					}
 					else {
@@ -713,9 +715,9 @@ bot.on('message', async function (msg) {
 				else if(res.rows[0].deposit=='0') {
 					bot.sendMessage(chatId,'Nothing in bank',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
 				}
-				//else if(msg.date-parseInt(res.rows[0].deposittime)<=10800) {
-				//	bot.sendMessage(chatId,'you cant withdraw before 3 hours after depositing');
-				//}
+				else if(msg.date-parseInt(res.rows[0].deposittime)<=3600) {
+					bot.sendMessage(chatId,'you cant withdraw before 1 hour after depositing');
+				}
 				else {
 					var amt=Math.floor(parseInt(res.rows[0].deposit)+(parseInt(res.rows[0].deposit)*0.05*(msg.date-parseInt(res.rows[0].deposittime))*0.00027777))+1;
 					add(amt,parseInt(res.rows[0].balance),userid);
