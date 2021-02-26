@@ -692,6 +692,7 @@ bot.on('message', async function (msg) {
 					var amt=Math.floor(parseInt(res.rows[0].deposit)+(parseInt(res.rows[0].deposit)*0.05*(msg.date-parseInt(res.rows[0].deposittime))*0.00027777))+1;
 					add(amt,parseInt(res.rows[0].balance),userid);
 					bot.sendMessage(chatId,'successfully withdrawn coins from bank, you account has been credited with '+amt+' coins');
+					con.query("update main set deposit='0' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
 				}
 			}
 			else {
