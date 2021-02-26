@@ -35,7 +35,7 @@ bot.on('message', async function (msg) {
 	var state='0',wris='0',chatId=msg.chat.id,text=msg.text,userid=msg.from.id.toString(),id=msg.from.id;
 	var user=await con.query('select * from main where userid=$1',[msg.from.id.toString()]).catch((e)=>{throw e;})
 	state=user.rows[0].state;
-	if(state=='0') {
+	if(state=='0'||user.rows[0]==undefined) {
 		rt = false;
 		//isSyntaxWrong=false;
 		if (text == undefined) { text = ''; }
@@ -103,7 +103,7 @@ bot.on('message', async function (msg) {
 								console.log('count2::' + result.rows[0].count);
 								if (result.rows[0].count == '0') {
 									console.log(4);
-									con.query('insert into main (userid,balance,numReferrals,wri) values ($1,$2,$3,$4)', [userid, '3000', null, '0'], function (err, result2, fields) {
+									con.query('insert into main (userid,balance,numReferrals,wri,state,deposit) values ($1,$2,$3,$4,$5,$6)', [userid, '3000', null, '0','0','0'], function (err, result2, fields) {
 										if (err) throw err;
 										console.log(5);
 										con.query('select numReferrals as numR from main where userid=$1', [refid], function (err, result3, fields) {
@@ -202,7 +202,7 @@ bot.on('message', async function (msg) {
 						var count = parseInt(result.rows[0].var);
 						if (count === 0) {
 							bal = 3000;
-							con.query('INSERT INTO main (userid,balance,wri) VALUES ($1,$2,$3)', [userid, '3000', '0'], function (err, result) {
+							con.query('INSERT INTO main (userid,balance,wri,state,deposit) VALUES ($1,$2,$3,$4,$5)', [userid, '3000', '0','0','0'], function (err, result) {
 								if (err) throw err;
 								console.log('inserted');
 								bet(bal, numm, 0);
@@ -276,7 +276,7 @@ bot.on('message', async function (msg) {
 							var count = parseInt(result.rows[0].var);
 							if (count === 0) {
 								bal = 3000;
-								con.query('INSERT INTO main (userid,balance,wri) VALUES ($1,$2,$3)', [userid, '3000', '0'], function (err, result) {
+								con.query('INSERT INTO main (userid,balance,wri,state,deposit) VALUES ($1,$2,$3,$4,$5)', [userid, '3000', '0','0','0'], function (err, result) {
 									if (err) throw err;
 									console.log('inserted');
 									bot.sendMessage(chatId, 'You can\'t use more win rate increasers than you have!!!.', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
@@ -364,7 +364,7 @@ bot.on('message', async function (msg) {
 								var count = result.rows[0].var;
 								if (count == '0') {
 									bal = 3000;
-									con.query('INSERT INTO main (userid,balance,wri) VALUES ($1,$2,$3)', [userid, '3000', '0'], function (err, result) {
+									con.query('INSERT INTO main (userid,balance,wri,state,deposit) VALUES ($1,$2,$3,$4,$5)', [userid, '3000', '0','0','0'], function (err, result) {
 										if (err) throw err;
 										console.log('inserted');
 										add(1000, bal, userid);
@@ -464,7 +464,7 @@ bot.on('message', async function (msg) {
 						if (err) throw err;
 						if (result.rows[0] == undefined) {
 							bal = 3000;
-							con.query('INSERT INTO main (userid,balance,wri) VALUES ($1,$2,$3)', [msg.from.id.toString(), '3000', '0'], function (err, result) {
+							con.query('INSERT INTO main (userid,balance,wri,state,deposit) VALUES ($1,$2,$3,$4,$5)', [msg.from.id.toString(), '3000', '0','0','0'], function (err, result) {
 								if (err) throw err;
 								//console.log('inserted');
 							});
@@ -479,7 +479,7 @@ bot.on('message', async function (msg) {
 						if (err) throw err;
 						if (result.rows[0] == undefined) {
 							bal2 = 3000;
-							con.query('INSERT INTO main (userid,balance,wri) VALUES ($1,$2,$3)', [msg.reply_to_message.from.id.toString(), '3000', '0'], function (err, result) {
+							con.query('INSERT INTO main (userid,balance,wri,state,deposit) VALUES ($1,$2,$3,$4,$5)', [msg.reply_to_message.from.id.toString(), '3000', '0','0','0'], function (err, result) {
 								if (err) throw err;
 								//console.log('inserted');
 							});
@@ -518,7 +518,7 @@ bot.on('message', async function (msg) {
 				if (err) throw err;
 				console.log(result.rows[0]);
 				if (result.rows[0] == undefined) {
-					con.query('insert into main (userid,balance,lastDayCollected,wri) values ($1,$2,$3,$4)', [userid, '3000', today.getDate() + ' ' + today.getMonth() + ' ' + today.getFullYear(), '0'], function (err, result, fields) {
+					con.query('insert into main (userid,balance,lastDayCollected,wri,state,deposit) values ($1,$2,$3,$4,$5,$6)', [userid, '3000', today.getDate() + ' ' + today.getMonth() + ' ' + today.getFullYear(), '0','0','0'], function (err, result, fields) {
 						if (err) throw err;
 						add(reward.coins, 3000, userid);
 						addwri(reward.wri, 0, userid);
@@ -679,24 +679,39 @@ bot.on('message', async function (msg) {
 			}
 		}
 		if(text.toUpperCase()=='/BANK'||text.toUpperCase()=='/BANK@BETTINGGAMEROBOT') {
-			var res=await con.query('select * from main where userid=$1',[userid]).catch((e)=>{throw err;})			
-			if(msg.chat.type=='private') {
-				if(res.rows[0].deposit=='0') {
-					bot.sendMessage(chatId,'Welcome to bank. Rate of simple interest is 5% per hour. You need to wait minimum 0 hours to withdraw after depositing. Enter the amount you want to deposit in the very next message.\nDo /cancel to cancel',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
-					con.query("update main set state='1' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
+			var res=await con.query('select * from main where userid=$1',[userid]).catch((e)=>{throw err;})	
+			if(res.rows[0]==undefined) {
+				await con.query('insert into main (userid,balance,wri,state,deposit) values ($1,$2,$3,$4,$5)', [userid, '3000', '0','0','0']).catch((e)=>{throw err;})
+				if(msg.chat.type=='private') {
+						bot.sendMessage(chatId,'Welcome to bank. Rate of simple interest is 5% per hour. You need to wait minimum 0 hours to withdraw after depositing. Enter the amount you want to deposit in the very next message. Amount should be less than or equal to 10 million coins.\nDo /cancel to cancel',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
+						con.query("update main set state='1' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
 				}
 				else {
-					bot.sendMessage(chatId,'Bank isnt empty, so you cant deposit more.',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true})
+					bot.sendMessage(chatId,'Bank related works can only be done in PM!',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
 				}
 			}
 			else {
-				bot.sendMessage(chatId,'Bank related works can only be done in PM!',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
+				if(msg.chat.type=='private') {
+					if(res.rows[0].deposit=='0') {
+						bot.sendMessage(chatId,'Welcome to bank. Rate of simple interest is 5% per hour. You need to wait minimum 0 hours to withdraw after depositing. Enter the amount you want to deposit in the very next message. Amount should be less than or equal to 10 million coins.\nDo /cancel to cancel',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
+						con.query("update main set state='1' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
+					}
+					else {
+						bot.sendMessage(chatId,'Bank isnt empty, so you cant deposit more.',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true})
+					}
+				}
+				else {
+					bot.sendMessage(chatId,'Bank related works can only be done in PM!',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
+				}
 			}
 		}
 		if(text.toUpperCase()=='/WITHDRAW'||text.toUpperCase()=='/WITHDRAW@BETTINGGAMEROBOT') {
 			if(msg.chat.type=='private') {
 				var res=await con.query('select * from main where userid=$1',[userid]).catch((e)=>{throw err;})
-				if(res.rows[0].deposit=='0') {
+				if(res.rows[0]==undefined) {
+					bot.sendMessage(chatId,'Nothing in bank',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
+				}
+				else if(res.rows[0].deposit=='0') {
 					bot.sendMessage(chatId,'Nothing in bank',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
 				}
 				//else if(msg.date-parseInt(res.rows[0].deposittime)<=10800) {
@@ -774,7 +789,7 @@ bot.on('message', async function (msg) {
 							var count = result.rows[0].var;
 							if (count === 0) {
 								bal = 3000;
-								con.query('INSERT INTO main (userid,balance,wri) VALUES ($1,$2,$3)', [msg.reply_to_message.from.id.toString(), '3000', '0'], function (err, result) {
+								con.query('INSERT INTO main (userid,balance,wri,state,deposit) VALUES ($1,$2,$3,$4,$5)', [msg.reply_to_message.from.id.toString(), '3000', '0','0','0'], function (err, result) {
 									if (err) throw err;
 									console.log('inserted');
 									add(numm, bal, msg.reply_to_message.from.id.toString());
@@ -813,7 +828,7 @@ bot.on('message', async function (msg) {
 							var count = result.rows[0].var;
 							if (count === 0) {
 								bal = numm;
-								con.query('INSERT INTO main (userid,balance,wri) VALUES ($1,$2,$3)', [msg.reply_to_message.from.id.toString(), bal.toString(), '0'], function (err, result) {
+								con.query('INSERT INTO main (userid,balance,wri,state,deposit) VALUES ($1,$2,$3,$4,$5)', [msg.reply_to_message.from.id.toString(), bal.toString(), '0','0','0'], function (err, result) {
 									if (err) throw err;
 									console.log('inserted');
 									bot.sendMessage(chatId, 'Done, Master👍🏻👍🏻.', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
@@ -848,7 +863,7 @@ bot.on('message', async function (msg) {
 							var count = result.rows[0].var;
 							if (count === 0) {
 								wri = numm;
-								con.query('INSERT INTO main (userid,balance,wri) VALUES ($1,$2,$3)', [msg.reply_to_message.from.id.toString(), '3000', wri.toString()], function (err, result) {
+								con.query('INSERT INTO main (userid,balance,wri,state,deposit) VALUES ($1,$2,$3,$4,$5)', [msg.reply_to_message.from.id.toString(), '3000', wri.toString(),'0','0'], function (err, result) {
 									if (err) throw err;
 									console.log('inserted');
 									bot.sendMessage(chatId, 'Done, Master👍🏻👍🏻.', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
@@ -985,6 +1000,9 @@ bot.on('message', async function (msg) {
 					}
 					else if(parseInt(text)==0) {
 						bot.sendMessage(chatId,'cant deposit 0 coins, try different amount\ndo /cancel to cancel');
+					}
+					else if(parseInt(text)>10000000) {
+						bot.sendMessage(chatId,'cant deposit such a big amount, try different amount\ndo /cancel to cancel');
 					}
 					else {
 						con.query("update main set deposit=$1 where userid=$2",[text,userid],(err,res)=> {if(err) throw err;});
@@ -1268,7 +1286,7 @@ bot.on('callback_query', async function (cbq) {
                     //var count = result[0].var;
                     if (result.rows[0] === 0) {
                         bal = 3000;
-                        con.query('INSERT INTO main (userid,balance,wri) VALUES ($1,$2,$3)', [cbq.from.id.toString(), '3000', '0'], function (err, result) {
+                        con.query('INSERT INTO main (userid,balance,wri,state,deposit) VALUES ($1,$2,$3,$4,$5)', [cbq.from.id.toString(), '3000', '0','0','0'], function (err, result) {
                             if (err) throw err;
                             console.log('inserted');
                             bal = bal + 1000;
