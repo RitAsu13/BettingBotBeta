@@ -17,13 +17,13 @@ con.query("select * from main", function (err, result) {
 	for(x=0;x<result.rows.length;x++) {
 		con.query("update main set state='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
 		con.query("update main set deposit='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
-		con.query("update main set numreferrals='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
+		//con.query("update main set numreferrals='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
 		con.query("update main set deposittime='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
 	}
 	    console.log('done');
 
 });
-bot.on('message', async function (msg) {
+/*bot.on('message', async function (msg) {
 	var state='0',wris='0',chatId=msg.chat.id,text=msg.text,userid=msg.from.id.toString(),id=msg.from.id;
 	var user=await con.query('select * from main where userid=$1',[msg.from.id.toString()]).catch((e)=>{throw e;})
 	state=user.rows[0].state;
@@ -949,7 +949,7 @@ bot.on('message', async function (msg) {
 			}
 		}
 	}
-	else if(state=='1') {
+	/*else if(state=='1') {
 		if(text.toUpperCase()=='/CANCEL'||text.toUpperCase()=='/CANCEL@BETTINGGAMEROBOT') {
 			if(msg.chat.type=='private') {
 				bot.sendMessage(chatId,'bank deposit cancelled');
@@ -1315,4 +1315,4 @@ bot.on('callback_query', async function (cbq) {
 bot.on('polling_error', (err) => {
     console.log(err);
    // bot.sendMessage(-446887802, err);
-});
+*/
