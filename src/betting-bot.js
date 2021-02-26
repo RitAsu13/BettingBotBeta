@@ -690,7 +690,7 @@ bot.on('message', async function (msg) {
 					bot.sendMessage(chatId,'you cant withdraw before 3 hours after depositing');
 				}
 				else {
-					var amt=Math.floor(parseInt(res.rows[0].deposit)+(parseInt(res.rows[0].deposit)*0.1*(msg.date-parseInt(res.rows[0].deposittime))*0.00027777))+1;
+					var amt=Math.floor(parseInt(res.rows[0].deposit)+(parseInt(res.rows[0].deposit)*0.05*(msg.date-parseInt(res.rows[0].deposittime))*0.00027777))+1;
 					add(amt,parseInt(res.rows[0].balance),userid);
 					bot.sendMessage(chatId,'successfully withdrawn coins from bank, you account has been credited with '+amt+' coins');
 				}
