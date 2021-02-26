@@ -671,9 +671,15 @@ bot.on('message', async function (msg) {
 			}
 		}
 		if(text.toUpperCase()=='/BANK'||text.toUpperCase()=='/BANK@BETTINGGAMEROBOT') {
+			var res=await con.query('select * from main where userid=$1',[userid]).catch((e)=>{throw err;})			
 			if(msg.chat.type=='private') {
-				bot.sendMessage(chatId,'Welcome to bank. Rate of simple interest is 5% per hour. You need to wait minimum 3 hours to withdraw after depositing. Enter the amount you want to deposit in the very next message.\nDo /cancel to cancel',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
-				con.query("update main set state='1' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
+				if(res.rows[0].deposit=='0') {
+					bot.sendMessage(chatId,'Welcome to bank. Rate of simple interest is 5% per hour. You need to wait minimum 0 hours to withdraw after depositing. Enter the amount you want to deposit in the very next message.\nDo /cancel to cancel',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
+					con.query("update main set state='1' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
+				}
+				else {
+					bot.sendMessage(chatId,'Bank isnt empty, so you cant deposit more.',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true})
+				}
 			}
 			else {
 				bot.sendMessage(chatId,'Bank related works can only be done in PM!',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
