@@ -673,7 +673,7 @@ bot.on('message', async function (msg) {
 		}
 		if(text.toUpperCase()=='/BANK'||text.toUpperCase()=='/BANK@BETTINGGAMEROBOT') {
 			if(msg.chat.type=='private') {
-				bot.sendMessage(chatId,'Welcome to bank. Rate of simple interest is 10% per hour. You need to wait minimum 3 hours to withdraw after depositing. Enter the amount you want to deposit in the very next message.\nDo /cancel to cancel',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
+				bot.sendMessage(chatId,'Welcome to bank. Rate of simple interest is 5% per hour. You need to wait minimum 3 hours to withdraw after depositing. Enter the amount you want to deposit in the very next message.\nDo /cancel to cancel',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
 				con.query("update main set state='1' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
 			}
 			else {
@@ -962,6 +962,7 @@ bot.on('message', async function (msg) {
 				var char_ = text[i];
 				if (char_ != '1' && char_ != '2' && char_ != '3' && char_ != '4' && char_ != '5' && char_ != '6' && char_ != '7' && char_ != '8' && char_ != '9' && char_ != '0') {
 					bot.sendMessage(chatId, 'Invalid amount. Please confirm that your entered amount follows this:-\n\nYou have to use whole numbers only, i.e. the number should not contain any other letter than digits, special character, decimal or \'e\'. And it should also not be negative.\n\nTry different amount.\ndo /cancel to cancel', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
+					break;
 				}
 				else if(i==text.length-1) {
 					var ress=await con.query('select * from main where userid=$1',[userid]).catch((e)=>{throw err;})
