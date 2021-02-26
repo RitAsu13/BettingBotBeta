@@ -23,13 +23,14 @@ con.query("select * from main", function (err, result) {
 
 });
 bot.on('message', async function (msg) {
-	var state='0',wris='0',chatId=msg.chat.id,text=msg.text,userid=msg.from.id.toString(),id=msg.from.id,;
+	var state='0',wris='0',chatId=msg.chat.id,text=msg.text,userid=msg.from.id.toString(),id=msg.from.id;
 	var user=await con.query('select * from main where userid=$1',[msg.from.id.toString()]).catch((e)=>{throw e;})
 	state=user.rows[0].state;
 	if(state=='0') {
 		rt = false;
 		//isSyntaxWrong=false;
 		if (text == undefined) { text = ''; }
+		
 		var res = await con.query('select lastcommanded from main where userid=$1', [userid]).catch((err) => { console.log(err); });
 		if (msg.entities != undefined && msg.entities[0].type == 'bot_command' && msg.entities[0].offset == 0) {
 			if (msg.date - parseFloat(res.rows[0].lastcommanded) <= 0.5) {
