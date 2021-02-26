@@ -7,23 +7,31 @@ con.connect();
 const TelegramBot = require('node-telegram-bot-api');
 const token = process.env.bottoken;
 const bot = new TelegramBot(token, { polling: true });
-var bal, isSyntaxWrong = false, x, bool1 = false, bool2 = false, admins = '1399340100 1130854062 1341350794 1473152324',cmds='/START /HELP /SETTINGS /INFO /CREDITS /BET /SETBETDEF /SBET /BAL /MYSTATS /MINIGAME /MINIGAMEHELP /SETMINIDEF /BUTTONMINIGAME /GIVE /REFERRALS /DAILYREWARD /LEADERBOARD /RLEADERBOARD /USERS /BROADCAST /REWARD /SETBAL /SETWRI /FULLUSERS /STATS /DELUSER';//, rt = false;
-con.query("select * from main", function (err, result) {
+var bal, isSyntaxWrong = false, x, bool1 = false, bool2 = false, admins = '1399340100 1130854062 1341350794 1473152324',cmds='/START@BETTINGGAMEROBOT /HELP@BETTINGGAMEROBOT /SETTINGS@BETTINGGAMEROBOT /INFO@BETTINGGAMEROBOT /CREDITS@BETTINGGAMEROBOT /BET@BETTINGGAMEROBOT /SETBETDEF@BETTINGGAMEROBOT /SBET@BETTINGGAMEROBOT /BAL@BETTINGGAMEROBOT /MYSTATS@BETTINGGAMEROBOT /MINIGAME@BETTINGGAMEROBOT /MINIGAMEHELP@BETTINGGAMEROBOT /SETMINIDEF@BETTINGGAMEROBOT /BUTTONMINIGAME@BETTINGGAMEROBOT /GIVE@BETTINGGAMEROBOT /REFERRALS@BETTINGGAMEROBOT /DAILYREWARD@BETTINGGAMEROBOT /LEADERBOARD@BETTINGGAMEROBOT /RLEADERBOARD@BETTINGGAMEROBOT /USERS@BETTINGGAMEROBOT /BROADCAST@BETTINGGAMEROBOT /REWARD@BETTINGGAMEROBOT /SETBAL@BETTINGGAMEROBOT /SETWRI@BETTINGGAMEROBOT /FULLUSERS@BETTINGGAMEROBOT /STATS@BETTINGGAMEROBOT /DELUSER@BETTINGGAMEROBOT /BANK@BETTINGGAMEROBOT /WITHDRAW@BETTINGGAMEROBOT /START /HELP /SETTINGS /INFO /CREDITS /BET /SETBETDEF /SBET /BAL /MYSTATS /MINIGAME /MINIGAMEHELP /SETMINIDEF /BUTTONMINIGAME /GIVE /REFERRALS /DAILYREWARD /LEADERBOARD /RLEADERBOARD /USERS /BROADCAST /REWARD /SETBAL /SETWRI /FULLUSERS /STATS /DELUSER /BANK /WITHDRAW';//, rt = false;
+con.query("select * from main", function (err, res) {
     if (err) throw err;
     for(x=0 ;x<5;x++) {
-    	console.log(result.rows[x]);
+    	console.log(res.rows[x]);
     }
-    console.log('\n\nNo of users: ' + result.rows.length + '\n\n');
-	for(x=0;x<result.rows.length;x++) {
-		con.query("update main set state='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
-		con.query("update main set deposit='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
-		//con.query("update main set numreferrals='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
-		con.query("update main set deposittime='0' where userid=$1",[result.rows[x].userid],(err,res)=> {if(err) throw err;});
+    console.log('\n\nNo of users: ' + res.rows.length + '\n\n');
+	for(x=0;x<res.rows.length;x++) {
+		if(res.rows[x].state==null) {
+			con.query("update main set state='0' where userid=$1",[res.rows[x].userid],(err,res)=> {if(err) throw err;});		
+		}
+		if(res.rows[x].deposit==null) {
+			con.query("update main set deposit='0' where userid=$1",[res.rows[x].userid],(err,res)=> {if(err) throw err;});		
+		}
+		if(res.rows[x].deposittime==null) {
+			con.query("update main set deposittime='0' where userid=$1",[res.rows[x].userid],(err,res)=> {if(err) throw err;});		
+		}
+		if(res.rows[x].numreferrals==null) {
+			con.query("update main set numreferrals='0' where userid=$1",[res.rows[x].userid],(err,res)=> {if(err) throw err;});		
+		}
 	}
 	    console.log('done');
 
 });
-/*bot.on('message', async function (msg) {
+bot.on('message', async function (msg) {
 	var state='0',wris='0',chatId=msg.chat.id,text=msg.text,userid=msg.from.id.toString(),id=msg.from.id;
 	var user=await con.query('select * from main where userid=$1',[msg.from.id.toString()]).catch((e)=>{throw e;})
 	state=user.rows[0].state;
@@ -949,7 +957,7 @@ con.query("select * from main", function (err, result) {
 			}
 		}
 	}
-	/*else if(state=='1') {
+	else if(state=='1') {
 		if(text.toUpperCase()=='/CANCEL'||text.toUpperCase()=='/CANCEL@BETTINGGAMEROBOT') {
 			if(msg.chat.type=='private') {
 				bot.sendMessage(chatId,'bank deposit cancelled');
@@ -1315,4 +1323,4 @@ bot.on('callback_query', async function (cbq) {
 bot.on('polling_error', (err) => {
     console.log(err);
    // bot.sendMessage(-446887802, err);
-*/
+});
