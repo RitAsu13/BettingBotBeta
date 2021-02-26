@@ -1,1 +1,1 @@
-git add . && git commit -m "lawl" && git push -u origin main --force && heroku logs --tail
+git add . && git commit -m "Just another commit" && git push -u origin main --force && heroku logs --tail
