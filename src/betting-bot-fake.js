@@ -7,7 +7,7 @@ const con = new Client({
 
 con.connect();
 const TelegramBot = require('node-telegram-bot-api');
-const token = '1402224157:AAFRcucXnsE9f3NC1OvPK1flPJQmI8NS1us';
+const token = 'token';
 const bot = new TelegramBot(token, { polling: true });
 var bal, isSyntaxWrong = false, x, bool1 = false, bool2 = false, admins = '1399340100 1130854062 1341350794 1473152324',wris='0';
 
