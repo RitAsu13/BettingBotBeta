@@ -1008,7 +1008,7 @@ bot.on('message', async function (msg) {
 					else {
 						con.query("update main set deposit=$1 where userid=$2",[text,userid],(err,res)=> {if(err) throw err;});
 						con.query("update main set state='2' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
-						bot.sendMessage(chatId,'Are you sure? If yes then send "Yes, sure." exactly without the quotes in the very next message. Note that deposited money can only be taken out after a minimum of 3 hours after deposit time and you cannot deposit more coins until you take this amount out.\n\ndo /cancel to cancel');
+						bot.sendMessage(chatId,'Are you sure? If yes then send "Yes, sure." exactly without the quotes in the very next message. Note that deposited money can only be taken out after a minimum of 1 hour after deposit time and you cannot deposit more coins until you take this amount out.\n\ndo /cancel to cancel');
 					}
 				}				
 			}
