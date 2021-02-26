@@ -28,8 +28,7 @@ con.query("select * from main", function (err, res) {
 			con.query("update main set numreferrals='0' where userid=$1",[res.rows[x].userid],(err,res)=> {if(err) throw err;});		
 		}
 	}
-	    console.log('done');
-
+	console.log('done');
 });
 bot.on('message', async function (msg) {
 	var state='0',wris='0',chatId=msg.chat.id,text=msg.text,userid=msg.from.id.toString(),id=msg.from.id;
