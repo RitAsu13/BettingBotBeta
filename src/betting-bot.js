@@ -685,9 +685,9 @@ bot.on('message', async function (msg) {
 				if(res.rows[0].deposit=='0') {
 					bot.sendMessage(chatId,'Nothing in bank',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
 				}
-				else if(msg.date-parseInt(res.rows[0].deposittime)<=10800) {
-					bot.sendMessage(chatId,'you cant withdraw before 3 hours after depositing');
-				}
+				//else if(msg.date-parseInt(res.rows[0].deposittime)<=10800) {
+				//	bot.sendMessage(chatId,'you cant withdraw before 3 hours after depositing');
+				//}
 				else {
 					var amt=Math.floor(parseInt(res.rows[0].deposit)+(parseInt(res.rows[0].deposit)*0.05*(msg.date-parseInt(res.rows[0].deposittime))*0.00027777))+1;
 					add(amt,parseInt(res.rows[0].balance),userid);
