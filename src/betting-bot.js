@@ -694,7 +694,7 @@ bot.on('message', async function (msg) {
 			else {
 				if(msg.chat.type=='private') {
 					if(res.rows[0].deposit=='0') {
-						bot.sendMessage(chatId,'Welcome to bank. Rate of simple interest is 5% per hour. Do /withdraw to withdraw your coins from the bank. You need to wait minimum 0 hours to withdraw after depositing. Enter the amount you want to deposit in the very next message. Amount should be less than or equal to 10 million coins.\nDo /cancel to cancel',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
+						bot.sendMessage(chatId,'Welcome to bank. Rate of simple interest is 5% per hour. Do /withdraw to withdraw your coins from the bank. You need to wait minimum 1 hour to withdraw after depositing. Enter the amount you want to deposit in the very next message. Amount should be less than or equal to 10 million coins.\nDo /cancel to cancel',{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
 						con.query("update main set state='1' where userid=$1",[userid],(err,res)=> {if(err) throw err;});
 					}
 					else {
