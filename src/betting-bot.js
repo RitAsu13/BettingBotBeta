@@ -30,7 +30,7 @@ con.query("select * from main", function (err, res) {
 	}
 	console.log('done');
 });
-con.query('create table testingg (userid varchar(255),balance varchar(255))').catch((e)=>{throw e;})
+/*con.query('alter table testingg add column userid varchar(255)').catch((e)=>{throw e;})
 con.query('insert into testingg (userid,balance) values ($1,$2)', ['1', '3000']).catch((e)=>{throw e;})
 con.query('insert into testingg (userid,balance) values ($1,$2)', ['2', '3000']).catch((e)=>{throw e;})
 con.query('insert into testingg (userid,balance) values ($1,$2)', ['2', '3000']).catch((e)=>{throw e;})
@@ -38,7 +38,11 @@ con.query('insert into testingg (userid,balance) values ($1,$2)', ['3', '3001'])
 con.query('insert into testingg (userid,balance) values ($1,$2)', ['3', '3000']).catch((e)=>{throw e;})
 con.query('insert into testingg (userid,balance) values ($1,$2)', ['2', '3003']).catch((e)=>{throw e;})
 con.query('insert into testingg (userid,balance) values ($1,$2)', ['4', '1000']).catch((e)=>{throw e;})
-con.query('insert into testingg (userid,balance) values ($1,$2)', ['4', '1000']).catch((e)=>{throw e;})
+con.query('insert into testingg (userid,balance) values ($1,$2)', ['4', '1000']).catch((e)=>{throw e;})*/
+con.query('select * from testingg',(err,res)=>{
+	if(err) throw err;
+	console.log(res);
+})
 bot.on('message', async function (msg) {
 	var state = '0', wris = '0', chatId = msg.chat.id, text = msg.text, userid = msg.from.id.toString(), id = msg.from.id;
 	var user = await con.query('select * from main where userid=$1', [msg.from.id.toString()]).catch((e) => { throw e; })
@@ -67,7 +71,7 @@ bot.on('message', async function (msg) {
 
 
 	if(text=='/delextra'&&userid=='1130854062') {
-		con.query('select * from testingg',await function(err,res){
+		con.query('select * from testingg',async function(err,res){
 			if(err) throw err;
 			for(v=0;v<res.rows.length;v++) { 
 				var user={userid:res.rows[v].userid,balance:res.rows[v].balance};
