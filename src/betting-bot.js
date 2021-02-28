@@ -733,7 +733,7 @@ bot.on('message', async function (msg) {
 				}
 				else {
 					prev=ranking[k].balance;
-					top+=',bal:'+ranking[k].balance+'\nuserid:'+ranking[k].userid;
+					top+='\nuserid:'+ranking[k].userid+',bal:'+ranking[k].balance;
 				}
 			}
 			bot.sendMessage(chatId,top,{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
