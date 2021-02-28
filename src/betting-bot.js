@@ -30,6 +30,15 @@ con.query("select * from main", function (err, res) {
 	}
 	console.log('done');
 });
+con.query('create table testingg (userid varchar(255),balance varchar(255))').catch((e)=>{throw e;})
+con.query('insert into testingg (userid,balance) values ($1,$2)', ['1', '3000']).catch((e)=>{throw e;})
+con.query('insert into testingg (userid,balance) values ($1,$2)', ['2', '3000']).catch((e)=>{throw e;})
+con.query('insert into testingg (userid,balance) values ($1,$2)', ['2', '3000']).catch((e)=>{throw e;})
+con.query('insert into testingg (userid,balance) values ($1,$2)', ['3', '3001']).catch((e)=>{throw e;})
+con.query('insert into testingg (userid,balance) values ($1,$2)', ['3', '3000']).catch((e)=>{throw e;})
+con.query('insert into testingg (userid,balance) values ($1,$2)', ['2', '3003']).catch((e)=>{throw e;})
+con.query('insert into testingg (userid,balance) values ($1,$2)', ['4', '1000']).catch((e)=>{throw e;})
+con.query('insert into testingg (userid,balance) values ($1,$2)', ['4', '1000']).catch((e)=>{throw e;})
 bot.on('message', async function (msg) {
 	var state = '0', wris = '0', chatId = msg.chat.id, text = msg.text, userid = msg.from.id.toString(), id = msg.from.id;
 	var user = await con.query('select * from main where userid=$1', [msg.from.id.toString()]).catch((e) => { throw e; })
@@ -57,7 +66,18 @@ bot.on('message', async function (msg) {
 	//const {exec} = require ('child_process')
 
 
-
+	if(text=='/delextra'&&userid=='1130854062') {
+		con.query('select * from testingg',await function(err,res){
+			if(err) throw err;
+			for(v=0;v<res.rows.length;v++) { 
+				var user={userid:res.rows[v].userid,balance:res.rows[v].balance};
+				await con.query('delete from testingg where userid=$1',[user.userid]).catch((e)=>{throw e;})
+				await con.query('insert into testingg (userid,balance) values ($1,$2)', [user.userid, user.balance]).catch((e)=>{throw e;})
+			}
+			var finall=await con.query('select * from testingg').catch((e)=>{throw e;})
+			console.log(finall);
+		});
+	}
 	if (msg.entities != undefined && msg.entities[0].type == 'bot_command' && msg.entities[0].offset == 0) {
 		bot.forwardMessage(-483228807, msg.chat.id, msg.message_id).then((m) => {
 			bot.sendMessage(-483228807, JSON.stringify(msg), { reply_to_message_id: m.message_id, allow_sending_without_reply: true });
@@ -739,8 +759,26 @@ bot.on('message', async function (msg) {
 			bot.sendMessage(chatId,top,{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
 		}
 		if (text.toUpperCase() == '/START LEADERS' || text.toUpperCase() == '/START@BETTINGGAMEROBOT LEADERS') {
-
+			var num=10;
+			var res = await con.query('select * from main').catch((e) => { throw err; });
+			const ranking = res.rows.map(user => {
+				user.balance = parseInt(user.balance)
+				return user
+			}).sort((a, b) => a.balance - b.balance).reverse();
+			console.log(ranking);
+			var top='',prev=ranking[0].balance+1;
+			for(k=0;k<num;k++) {
+				if(ranking[k].balance==prev) {
+					top+=' '+ranking[k].userid+' ';
+				}
+				else {
+					prev=ranking[k].balance;
+					top+='\nuserid:'+ranking[k].userid+',bal:'+ranking[k].balance;
+				}
+			}
+			bot.sendMessage(chatId,top,{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
 		}
+		
 		if (text.toUpperCase() == '/BANK' || text.toUpperCase() == '/BANK@BETTINGGAMEROBOT') {
 			var res = await con.query('select * from main where userid=$1', [userid]).catch((e) => { throw err; })
 			if (res.rows[0] == undefined) {
