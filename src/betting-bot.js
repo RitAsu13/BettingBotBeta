@@ -41,7 +41,7 @@ bot.on('message', async function (msg) {
 	if (text == undefined) { text = ''; }
 
 	var res = await con.query('select lastcommanded from main where userid=$1', [userid]).catch((err) => { console.log(err); });
-	if (msg.entities != undefined && msg.entities[0].type == 'bot_command' && msg.entities[0].offset == 0) {
+	/*if (msg.entities != undefined && msg.entities[0].type == 'bot_command' && msg.entities[0].offset == 0) {
 		if (msg.date - parseFloat(res.rows[0].lastcommanded) <= 0.5) {
 			bot.sendMessage(chatId, 'Commanding too fast.', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
 			return;
@@ -51,7 +51,7 @@ bot.on('message', async function (msg) {
 				if (err) throw err;
 			});
 		}
-	}
+	}*/
 
 	//console.log(rt);
 	//const {exec} = require ('child_process')
@@ -573,7 +573,7 @@ bot.on('message', async function (msg) {
 				}
 			})
 		}
-		if (text.toUpperCase() == '/LEADERBOARD' || text.toUpperCase() == '/LEADERBOARD@BETTINGGAMEROBOT') {
+		/*if (text.toUpperCase() == '/LEADERBOARD' || text.toUpperCase() == '/LEADERBOARD@BETTINGGAMEROBOT') {
 			if (msg.chat.type == 'private') {
 				con.query("select * from main", function (err, res) {
 					if (err) throw err;
@@ -706,6 +706,40 @@ bot.on('message', async function (msg) {
 			else {
 				bot.sendMessage(chatId, 'You can see leaderboard only in PM!', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
 			}
+		}*/
+		if (text.toUpperCase().startsWith('/LEADERBOARD') || text.toUpperCase().startsWith('/LEADERBOARD@BETTINGGAMEROBOT')) {
+			var num;
+			if (text.toUpperCase() == '/LEADERBOARD' || text.toUpperCase() == '/LEADERBOARD@BETTINGGAMEROBOT') {
+				num = 10;
+			}
+			else {
+				num = numFunc(text, '/leaderboard');
+				if (num == 0 || num > 50) {
+					bot.sendMessage(chatId, 'You can only use a number from 1, 2, 3, ......, 50, and NO other number.', { reply_to_message_id: msg.message_id, all: true });
+					return;
+				}
+				if (num == -1) { return; }
+			}
+			var res = await con.query('select * from main').catch((e) => { throw err; });
+			const ranking = res.rows.map(user => {
+				user.balance = parseInt(user.balance)
+				return user
+			}).sort((a, b) => a.balance - b.balance).reverse();
+			console.log(ranking);
+			var top='',prev=ranking[0].balance+1;
+			for(k=0;k<num;k++) {
+				if(ranking[k].balance==prev) {
+					top+=' '+ranking[k].userid+' ';
+				}
+				else {
+					prev=ranking[k].balance;
+					top+=',bal:'+ranking[k].balance+'\nuserid:'+ranking[k].userid;
+				}
+			}
+			bot.sendMessage(chatId,top,{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
+		}
+		if (text.toUpperCase() == '/START LEADERS' || text.toUpperCase() == '/START@BETTINGGAMEROBOT LEADERS') {
+
 		}
 		if (text.toUpperCase() == '/BANK' || text.toUpperCase() == '/BANK@BETTINGGAMEROBOT') {
 			var res = await con.query('select * from main where userid=$1', [userid]).catch((e) => { throw err; })
