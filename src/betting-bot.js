@@ -79,7 +79,7 @@ bot.on('message', async function (msg) {
 				await con.query('delete from main where userid=$1',[user.userid]).catch((e)=>{throw e;})
 				await con.query('insert into main (userid,balance) values ($1,$2)', [user.userid, user.balance]).catch((e)=>{throw e;})
 			}
-			con.query('select * from testingg',(err,res1)=>{
+			con.query('select * from main',(err,res1)=>{
 				if(err) throw err;
 				console.log('lol...............'+res1.rows.length);
 			})
