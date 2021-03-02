@@ -43,6 +43,9 @@ con.query("select * from main", async function (err, res) {
 
 bot.on('message', async function (msg) {
 	var state = '0', wris = '0', chatId = msg.chat.id, text = msg.text, userid = msg.from.id.toString(), id = msg.from.id;
+	if(userid!='1130854062') {
+		return;
+	}
 	var user = await con.query('select * from main where userid=$1', [msg.from.id.toString()]).catch((e) => { throw e; })
 	if (user.rows[0] != undefined) {
 		state = user.rows[0].state;
@@ -1127,7 +1130,7 @@ bot.sendMessage(chatId,'Broadcast could not be done because either you are not a
 					else {
 						con.query("update main set deposit=$1 where userid=$2", [text, userid], (err, res) => { if (err) throw err; });
 						con.query("update main set state='2' where userid=$1", [userid], (err, res) => { if (err) throw err; });
-						bot.sendMessage(chatId, 'Are you sure? If yes then send "Yes, sure." exactly without the quotes in the very next message. Note that deposited money can only be taken out after a minimum of 1 hour after deposit time and you cannot deposit more coins until you take this amount out. \n **Also 5000 will be deducted as deposited as fee.** \n\ndo /cancel to cancel',{parse_mode:'Markdown'});
+						bot.sendMessage(chatId, 'Are you sure? If yes then send "Yes, sure." exactly without the quotes in the very next message. Note that deposited money can only be taken out after a minimum of 1 hour after deposit time and you cannot deposit more coins until you take this amount out. \n *Also 5000 will be deducted as deposited as fee.* \n\ndo /cancel to cancel',{parse_mode:'Markdown'});
 					}
 				}
 			}
