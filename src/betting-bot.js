@@ -72,16 +72,16 @@ bot.on('message', async function (msg) {
 
 
 	if(text=='/delextra'&&userid=='1130854062') {
-		con.query('select * from testingg',async function(err,res){
+		con.query('select * from main',async function(err,res){
 			if(err) throw err;
 			for(v=res.rows.length-1;v>=0;v--) { 
 				var user={userid:res.rows[v].userid,balance:res.rows[v].balance};
-				await con.query('delete from testingg where userid=$1',[user.userid]).catch((e)=>{throw e;})
-				await con.query('insert into testingg (userid,balance) values ($1,$2)', [user.userid, user.balance]).catch((e)=>{throw e;})
+				await con.query('delete from main where userid=$1',[user.userid]).catch((e)=>{throw e;})
+				await con.query('insert into main (userid,balance) values ($1,$2)', [user.userid, user.balance]).catch((e)=>{throw e;})
 			}
 			con.query('select * from testingg',(err,res1)=>{
 				if(err) throw err;
-				console.log(res1);
+				console.log('lol...............'+res1.rows.length);
 			})
 		});
 	}
