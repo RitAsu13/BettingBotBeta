@@ -797,7 +797,7 @@ bot.on('message', async function (msg) {
 			if (res.rows[0] == undefined) {
 				await con.query('insert into main (userid,balance,wri,state,deposit) values ($1,$2,$3,$4,$5)', [userid, '3000', '0', '0', '0']).catch((e) => { throw err; })
 				if (msg.chat.type == 'private') {
-					bot.sendMessage(chatId, 'Welcome to bank. Rate of simple interest is 5% per hour. Do /withdraw to withdraw your coins from the bank. You need to wait minimum 1 hour to withdraw after depositing. Enter the amount you want to deposit in the very next message. Amount should be less than or equal to 10 million coins.\nDo /cancel to cancel', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
+					bot.sendMessage(chatId, 'Welcome to bank. Rate of simple interest is 5% per hour. Do /withdraw to withdraw your coins from the bank. You need to wait minimum 1 hour to withdraw after depositing. 2000 will be taken as depositing fee. Enter the amount you want to deposit in the very next message. Amount should be less than or equal to 10 million coins.\nDo /cancel to cancel', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
 					con.query("update main set state='1' where userid=$1", [userid], (err, res) => { if (err) throw err; });
 				}
 				else {
@@ -807,7 +807,7 @@ bot.on('message', async function (msg) {
 			else {
 				if (msg.chat.type == 'private') {
 					if (res.rows[0].deposit == '0') {
-						bot.sendMessage(chatId, 'Welcome to bank. Rate of simple interest is 5% per hour. Do /withdraw to withdraw your coins from the bank. You need to wait minimum 1 hour to withdraw after depositing. Enter the amount you want to deposit in the very next message. Amount should be less than or equal to 10 million coins.\nDo /cancel to cancel', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
+						bot.sendMessage(chatId, 'Welcome to bank. Rate of simple interest is 5% per hour. Do /withdraw to withdraw your coins from the bank. You need to wait minimum 1 hour to withdraw after depositing. 2000 will be taken as depositing fee. Enter the amount you want to deposit in the very next message. Amount should be less than or equal to 10 million coins.\nDo /cancel to cancel', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
 						con.query("update main set state='1' where userid=$1", [userid], (err, res) => { if (err) throw err; });
 					}
 					else {
@@ -1112,6 +1112,9 @@ bot.sendMessage(chatId,'Broadcast could not be done because either you are not a
 					if (parseInt(ress.rows[0].balance) - parseInt(text) < 0) {
 						bot.sendMessage(chatId, 'cant deposit more than balance, try different amount\ndo /cancel to cancel');
 					}
+					else if(parseInt(ress.rows[0].balance) - parseInt(text) < 2000) {
+						bot.sendMessage(chatId, 'cant deposit this much amount, because if done so, then you wont be able to pay the depositing fee, try different amount\ndo /cancel to cancel');
+					}
 					else if (parseInt(text) == 0) {
 						bot.sendMessage(chatId, 'cant deposit 0 coins, try different amount\ndo /cancel to cancel');
 					}
@@ -1139,10 +1142,12 @@ bot.sendMessage(chatId,'Broadcast could not be done because either you are not a
 			}
 		}
 		else if (text == 'Yes, sure.' && msg.chat.type == 'private') {
-			bot.sendMessage(chatId, 'coins successfully deposited');
+			bot.sendMessage(chatId, 'coins successfully deposited, fee of 2000 also deducted');
 			con.query('select * from main where userid=$1', [userid], (err, res) => {
 				if (err) throw err;
 				add(0 - parseInt(res.rows[0].deposit), parseInt(res.rows[0].balance), userid);
+				add(-2000, parseInt(res.rows[0].balance), userid);
+
 			});
 			con.query("update main set deposittime=$1 where userid=$2", [msg.date.toString(), userid], (err, res) => { if (err) throw err; });
 			con.query("update main set state='0' where userid=$1", [userid], (err, res) => { if (err) throw err; });
