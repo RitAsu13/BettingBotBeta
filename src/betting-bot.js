@@ -8,7 +8,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const token = process.env.bottoken;
 const bot = new TelegramBot(token, { polling: true });
 var bal, isSyntaxWrong = false, x, bool1 = false, bool2 = false, admins = '1399340100 1130854062 1341350794 1473152324', cmds = '/START@BETTINGGAMEROBOT /HELP@BETTINGGAMEROBOT /SETTINGS@BETTINGGAMEROBOT /INFO@BETTINGGAMEROBOT /CREDITS@BETTINGGAMEROBOT /BET@BETTINGGAMEROBOT /SETBETDEF@BETTINGGAMEROBOT /SBET@BETTINGGAMEROBOT /BAL@BETTINGGAMEROBOT /MYSTATS@BETTINGGAMEROBOT /MINIGAME@BETTINGGAMEROBOT /MINIGAMEHELP@BETTINGGAMEROBOT /SETMINIDEF@BETTINGGAMEROBOT /BUTTONMINIGAME@BETTINGGAMEROBOT /GIVE@BETTINGGAMEROBOT /REFERRALS@BETTINGGAMEROBOT /DAILYREWARD@BETTINGGAMEROBOT /LEADERBOARD@BETTINGGAMEROBOT /RLEADERBOARD@BETTINGGAMEROBOT /USERS@BETTINGGAMEROBOT /BROADCAST@BETTINGGAMEROBOT /REWARD@BETTINGGAMEROBOT /SETBAL@BETTINGGAMEROBOT /SETWRI@BETTINGGAMEROBOT /FULLUSERS@BETTINGGAMEROBOT /STATS@BETTINGGAMEROBOT /DELUSER@BETTINGGAMEROBOT /BANK@BETTINGGAMEROBOT /WITHDRAW@BETTINGGAMEROBOT /START /HELP /SETTINGS /INFO /CREDITS /BET /SETBETDEF /SBET /BAL /MYSTATS /MINIGAME /MINIGAMEHELP /SETMINIDEF /BUTTONMINIGAME /GIVE /REFERRALS /DAILYREWARD /LEADERBOARD /RLEADERBOARD /USERS /BROADCAST /REWARD /SETBAL /SETWRI /FULLUSERS /STATS /DELUSER /BANK /WITHDRAW';//, rt = false;
-con.query("select * from main", function (err, res) {
+con.query("select * from main", async function (err, res) {
 	if (err) throw err;
 	for (x = 0; x < 5; x++) {
 		console.log(res.rows[x]);
@@ -16,33 +16,31 @@ con.query("select * from main", function (err, res) {
 	console.log('\n\nNo of users: ' + res.rows.length + '\n\n');
 	for (x = 0; x < res.rows.length; x++) {
 		if (res.rows[x].state == null) {
-			con.query("update main set state='0' where userid=$1", [res.rows[x].userid], (err, res) => { if (err) throw err; });
+			await con.query("update main set state='0' where userid=$1", [res.rows[x].userid], (err, res) => { if (err) throw err; });
 		}
 		if (res.rows[x].deposit == null) {
-			con.query("update main set deposit='0' where userid=$1", [res.rows[x].userid], (err, res) => { if (err) throw err; });
+			await con.query("update main set deposit='0' where userid=$1", [res.rows[x].userid], (err, res) => { if (err) throw err; });
 		}
 		if (res.rows[x].deposittime == null) {
-			con.query("update main set deposittime='0' where userid=$1", [res.rows[x].userid], (err, res) => { if (err) throw err; });
+			await con.query("update main set deposittime='0' where userid=$1", [res.rows[x].userid], (err, res) => { if (err) throw err; });
 		}
 		if (res.rows[x].numreferrals == null) {
-			con.query("update main set numreferrals='0' where userid=$1", [res.rows[x].userid], (err, res) => { if (err) throw err; });
+			await con.query("update main set numreferrals='0' where userid=$1", [res.rows[x].userid], (err, res) => { if (err) throw err; });
 		}
 	}
 	console.log('done');
+	await con.query('truncate table testingg').catch((e)=>{throw e;})
+	await con.query('insert into testingg (userid,balance) values ($1,$2)', ['1', '3000']).catch((e)=>{throw e;})
+	await con.query('insert into testingg (userid,balance) values ($1,$2)', ['2', '3000']).catch((e)=>{throw e;})
+	await con.query('insert into testingg (userid,balance) values ($1,$2)', ['2', '3000']).catch((e)=>{throw e;})
+	await con.query('insert into testingg (userid,balance) values ($1,$2)', ['3', '3001']).catch((e)=>{throw e;})
+	await con.query('insert into testingg (userid,balance) values ($1,$2)', ['3', '3000']).catch((e)=>{throw e;})
+	await con.query('insert into testingg (userid,balance) values ($1,$2)', ['2', '3003']).catch((e)=>{throw e;})
+	await con.query('insert into testingg (userid,balance) values ($1,$2)', ['4', '1000']).catch((e)=>{throw e;})
+	await con.query('insert into testingg (userid,balance) values ($1,$2)', ['4', '1000']).catch((e)=>{throw e;})
+ 
 });
-//con.query('alter table testingg add column userid varchar(255)').catch((e)=>{throw e;})
-con.query('insert into testingg (userid,balance) values ($1,$2)', ['1', '3000']).catch((e)=>{throw e;})
-con.query('insert into testingg (userid,balance) values ($1,$2)', ['2', '3000']).catch((e)=>{throw e;})
-con.query('insert into testingg (userid,balance) values ($1,$2)', ['2', '3000']).catch((e)=>{throw e;})
-con.query('insert into testingg (userid,balance) values ($1,$2)', ['3', '3001']).catch((e)=>{throw e;})
-con.query('insert into testingg (userid,balance) values ($1,$2)', ['3', '3000']).catch((e)=>{throw e;})
-con.query('insert into testingg (userid,balance) values ($1,$2)', ['2', '3003']).catch((e)=>{throw e;})
-con.query('insert into testingg (userid,balance) values ($1,$2)', ['4', '1000']).catch((e)=>{throw e;})
-con.query('insert into testingg (userid,balance) values ($1,$2)', ['4', '1000']).catch((e)=>{throw e;})
-con.query('select * from testingg',(err,res)=>{
-	if(err) throw err;
-	console.log(res);
-})
+
 bot.on('message', async function (msg) {
 	var state = '0', wris = '0', chatId = msg.chat.id, text = msg.text, userid = msg.from.id.toString(), id = msg.from.id;
 	var user = await con.query('select * from main where userid=$1', [msg.from.id.toString()]).catch((e) => { throw e; })
@@ -78,8 +76,10 @@ bot.on('message', async function (msg) {
 				await con.query('delete from testingg where userid=$1',[user.userid]).catch((e)=>{throw e;})
 				await con.query('insert into testingg (userid,balance) values ($1,$2)', [user.userid, user.balance]).catch((e)=>{throw e;})
 			}
-			var finall=await con.query('select * from testingg').catch((e)=>{throw e;})
-			console.log(finall);
+			con.query('select * from testingg',(err,res1)=>{
+				if(err) throw err;
+				console.log(res1);
+			})
 		});
 	}
 	if (msg.entities != undefined && msg.entities[0].type == 'bot_command' && msg.entities[0].offset == 0) {
@@ -750,14 +750,23 @@ bot.on('message', async function (msg) {
 				return user
 			}).sort((a, b) => a.balance - b.balance).reverse();
 			console.log(ranking);
-			var top='',prev=ranking[0].balance+1;
+			var top='',prev=ranking[0].balance+1,previd='1';
 			for(k=0;k<num;k++) {
+				if(previd==ranking[k].userid) {
+					if(ranking[k].balance==prev) {
+						continue;
+					}
+					else {
+						k--;
+						continue;
+					}
+				}
 				if(ranking[k].balance==prev) {
 					top+=' '+ranking[k].userid+' ';
 				}
 				else {
 					prev=ranking[k].balance;
-					top+='\nuserid:'+ranking[k].userid+',bal:'+ranking[k].balance;
+					top+='\nUserID : '+ranking[k].userid+', Balance : '+ranking[k].balance;
 				}
 			}
 			bot.sendMessage(chatId,top,{reply_to_message_id:msg.message_id,allow_sending_without_reply:true});
