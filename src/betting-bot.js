@@ -95,7 +95,10 @@ bot.on('message', async function (msg) {
 
 		var res = await con.query('select lastcommanded from main where userid=$1', [userid]).catch((err) => { console.log(err); });
 		if (msg.entities != undefined && msg.entities[0].type == 'bot_command' && msg.entities[0].offset == 0) {
-			if (msg.date - parseFloat(res.rows[0].lastcommanded) <= 0.5) {
+			if(res.rows[0]==undefined) {
+				//nothing
+			}
+			else if (msg.date - parseFloat(res.rows[0].lastcommanded) <= 0.5) {
 				bot.sendMessage(chatId, 'Commanding too fast.', { reply_to_message_id: msg.message_id, allow_sending_without_reply: true });
 				return;
 			}
